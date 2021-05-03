@@ -1,0 +1,10 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Datasource local storage ignored files
+/../../../../../../../../../:\Users\bezou\Disk Google\Educanet\2020-2021\Programování\pr-\.idea/dataSources/
+/dataSources.local.xml
+# Zeppelin ignored files
+/ZeppelinRemoteNotebooks/
+# Editor-based HTTP Client requests
+/httpRequests/
