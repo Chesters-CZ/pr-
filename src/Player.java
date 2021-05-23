@@ -1,4 +1,6 @@
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Player {
@@ -11,7 +13,7 @@ public class Player {
             System.out.println(MikolasovyConsoleBarvy.PURPLE + "WARN: Každý musí na začátku mít alespoň jednu kartu.");
         }
         for (int i = 0; i < cardCount; i++) {
-            hand.add(Deck.drawCard());
+            hand.add(Main.game.deck.drawCard());
         }
         this.isHuman = isHuman;
     }
@@ -23,17 +25,17 @@ public class Player {
     public void playSth() {
         if (this.isHuman) {
             StringBuilder visualizedCards = new StringBuilder();
-            for (int i = 0; i < hand.size(); i++) {
-                if (this.hand.get(i).canUse())
-                    visualizedCards.append(switch (this.hand.get(i).color) {
-                        case ACORNS -> MikolasovyConsoleBarvy.YELLOW;
-                        case BALLS -> MikolasovyConsoleBarvy.CYAN;
-                        case HEARTS -> MikolasovyConsoleBarvy.RED;
-                        case LEAVES -> MikolasovyConsoleBarvy.GREEN;
-                        default -> MikolasovyConsoleBarvy.PURPLE;
-                    });
-                else visualizedCards.append(MikolasovyConsoleBarvy.BLACK);
-                visualizedCards.append(switch (this.hand.get(i).type) {
+            //debug System.out.println(this.hand.size());
+            for (Card card : hand) {
+                if (!Main.game.deck.canUse(card)) visualizedCards.append(MikolasovyConsoleBarvy.BG_BLACK);
+                visualizedCards.append(switch (card.color) {
+                    case ACORNS -> MikolasovyConsoleBarvy.YELLOW;
+                    case BALLS -> MikolasovyConsoleBarvy.CYAN;
+                    case HEARTS -> MikolasovyConsoleBarvy.RED;
+                    case LEAVES -> MikolasovyConsoleBarvy.GREEN;
+                    default -> MikolasovyConsoleBarvy.PURPLE;
+                });
+                visualizedCards.append(switch (card.type) {
                     case ACE, ACE_USED -> " A";
                     case TEN -> "10";
                     case JEAN -> " J";
@@ -45,17 +47,21 @@ public class Player {
                     default -> MikolasovyConsoleBarvy.PURPLE + "??";
                 }).append("\t").append(MikolasovyConsoleBarvy.RESET);
             }
-            visualizedCards.append(switch (Instances.deck.lastCard.type) {
+            //debug Main.game.deck.lastCard.dump();
+            visualizedCards.append(switch (Main.game.deck.lastCard.type) {
                 case ACE -> "PASS";
-                case SEVEN -> "DRW" + Instances.deck.lastCard.drawMultiple;
+                case SEVEN -> "DRW" + Main.game.deck.lastCard.drawMultiple;
                 default -> "DRAW";
             });
             visualizedCards.append("\n");
 
             for (int i = 0; i < this.hand.size(); i++) {
+                if (!Main.game.deck.canUse(hand.get(i)))
+                    visualizedCards.append(MikolasovyConsoleBarvy.BG_BLACK);
                 if (i < 10)
                     visualizedCards.append(" ").append(i).append("\t");
                 else visualizedCards.append(i).append("\t");
+                visualizedCards.append(MikolasovyConsoleBarvy.RESET);
             }
             visualizedCards.append(this.hand.size());
             System.out.println(visualizedCards);
@@ -63,52 +69,119 @@ public class Player {
             int chosen;
             while (true) {
                 try {
-                    chosen = Instances.scanner.nextInt();
+                    chosen = Main.game.scanner.nextInt();
                     if (chosen > this.hand.size() || chosen < 0) throw new Exception();
                 } catch (Exception e) {
                     System.out.println("Zvolil jsi neplatnou hodnotu.");
                     continue;
                 }
-                if (Instances.deck.lastCard.type == Card.Type.ACE) {
-                    Instances.deck.lastCard.type = Card.Type.ACE_USED;
+                if (Main.game.deck.lastCard.type == Card.Type.ACE) {
+                    Main.game.deck.lastCard.type = Card.Type.ACE_USED;
                     break;
-                } else if (Instances.deck.lastCard.type == Card.Type.SEVEN) {
+                } else if (Main.game.deck.lastCard.type == Card.Type.SEVEN) {
                     if (chosen == this.hand.size()) {
-                        for (int i = 0; i < Instances.deck.lastCard.drawMultiple; i++) this.hand.add(Deck.drawCard());
-                        Instances.deck.lastCard.type = Card.Type.SEVEN_USED;
+                        for (int i = 0; i < Main.game.deck.lastCard.drawMultiple; i++)
+                            this.hand.add(Main.game.deck.drawCard());
+                        Main.game.deck.lastCard.type = Card.Type.SEVEN_USED;
                         break;
-                    } else if (hand.get(chosen).canUse() && hand.get(chosen).type == Card.Type.SEVEN) {
-                        Instances.deck.lastCard.drawMultiple += 2;
+                    } else if (Main.game.deck.canUse(hand.get(chosen)) && hand.get(chosen).type == Card.Type.SEVEN) {
+                        Main.game.deck.lastCard.drawMultiple += 2;
+                        Main.game.deck.lastCard.color = hand.get(chosen).color;
+                        hand.remove(chosen);
                         break;
                     }
                 } else if (chosen == this.hand.size()) {
-                    this.hand.add(Deck.drawCard());
+                    this.hand.add(Main.game.deck.drawCard());
                     break;
-                } else if (hand.get(chosen).canUse()) {
-                    Instances.deck.lastCard = hand.get(chosen);
+                } else if (hand.get(chosen).type == Card.Type.QUEEN) {
+                    Main.game.deck.lastCard = hand.get(chosen);
+                    hand.remove(chosen);
+                    System.out.println("Zvol barvu svrška");
+                    System.out.println(MikolasovyConsoleBarvy.RED + "SRDCE " + MikolasovyConsoleBarvy.YELLOW + "ŽALUDY " + MikolasovyConsoleBarvy.CYAN + "KOULE " + MikolasovyConsoleBarvy.GREEN + "LISTY" + MikolasovyConsoleBarvy.RESET);
+                    boolean repeat = true;
+                    while (repeat)
+                        switch (Main.game.scanner.nextLine().replaceAll("\\p{M}", "").toLowerCase(Locale.ROOT)) {
+                            case "srdce" -> {
+                                Main.game.deck.lastCard.color = Card.Color.HEARTS;
+                                repeat = false;
+                            }
+                            case "zaludy" -> {
+                                Main.game.deck.lastCard.color = Card.Color.ACORNS;
+                                repeat = false;
+                            }
+                            case "koule" -> {
+                                Main.game.deck.lastCard.color = Card.Color.BALLS;
+                                repeat = false;
+                            }
+                            case "listy" -> {
+                                Main.game.deck.lastCard.color = Card.Color.LEAVES;
+                                repeat = false;
+                            }
+                            default -> System.out.println("Zadanou barvu neznám. Zkus to znova.");
+                        }
+                } else if (Main.game.deck.canUse(hand.get(chosen))) {
+                    Main.game.deck.lastCard = hand.get(chosen);
                     hand.remove(hand.get(chosen));
                     break;
                 }
             }
 
-        } else {
-            int chosen = (int) (Math.random() * hand.size());
-            if (Instances.deck.lastCard.type == Card.Type.ACE) {
-                Instances.deck.lastCard.type = Card.Type.ACE_USED;
-            } else if (Instances.deck.lastCard.type == Card.Type.SEVEN) {
-                if (chosen == this.hand.size()) {
-                    for (int i = 0; i < Instances.deck.lastCard.drawMultiple; i++) this.hand.add(Deck.drawCard());
-                    Instances.deck.lastCard.type = Card.Type.SEVEN_USED;
-                } else if (hand.get(chosen).canUse() && hand.get(chosen).type == Card.Type.SEVEN) {
-                    Instances.deck.lastCard.drawMultiple += 2;
+        } else {    // bot ai
+            boolean playedsth = false;
+            int chosen = -1;
+            switch (Main.game.deck.lastCard.type) {
+                case SEVEN -> {
+                    if (hasCard(Card.Type.SEVEN)) {
+                        for (int i = 0; i < this.hand.size(); i++)
+                            if (this.hand.get(i).type == Card.Type.SEVEN) {
+                                chosen = i;
+                                break;
+                            }
+                        Main.game.deck.lastCard.drawMultiple += 2;
+                        Main.game.deck.lastCard.color = hand.get(chosen).color;
+                        hand.remove(chosen);
+                    } else {
+                        for (int i = 0; i < Main.game.deck.lastCard.drawMultiple; i++)
+                            this.hand.add(Main.game.deck.drawCard());
+                        Main.game.deck.lastCard.type = Card.Type.SEVEN_USED;
+                    }
                 }
-            } else if (chosen == this.hand.size()) {
-                this.hand.add(Deck.drawCard());
-            } else if (hand.get(chosen).canUse()) {
-                Instances.deck.lastCard = hand.get(chosen);
-                hand.remove(hand.get(chosen));
+
+                case ACE -> {
+                    if (hasCard(Card.Type.ACE)) {
+                        for (int i = 0; i < this.hand.size(); i++)
+                            if (this.hand.get(i).type == Card.Type.ACE) {
+                                chosen = i;
+                                break;
+                            }
+                        Main.game.deck.lastCard = hand.get(chosen);
+                        hand.remove(chosen);
+                    } else Main.game.deck.lastCard.type = Card.Type.ACE_USED;
+                }
+                default -> {
+                    if (hasCard(Main.game.deck.lastCard.color) || hasCard(Main.game.deck.lastCard.type)) {
+                        do {
+                            chosen = (int) (Math.random() * hand.size());
+                        } while (!Main.game.deck.canUse(hand.get(chosen)));
+                        Main.game.deck.lastCard = hand.get(chosen);
+                        hand.remove(chosen);
+                    } else hand.add(Main.game.deck.drawCard());
+                }
             }
-            System.out.println("AI played " + Instances.deck.lastCard.type + " of " + Instances.deck.lastCard.color);
         }
+    }
+
+    public boolean hasCard(Card.Color color) {
+        for (Card card : this.hand) {
+            if (card.color == color) return true;
+        }
+        return false;
+    }
+
+    public boolean hasCard(Card.Type type) {
+        for (Card card : this.hand) {
+            if (card.type == type) return true;
+        }
+        return false;
     }
 }

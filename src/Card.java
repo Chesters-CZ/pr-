@@ -1,3 +1,7 @@
+import org.jetbrains.annotations.NotNull;
+
+import java.time.chrono.MinguoChronology;
+
 public class Card {
     public Color color;
     public Type type;
@@ -6,6 +10,7 @@ public class Card {
     public Card(Type type, Color color) {
         this.color = color;
         this.type = type;
+        this.drawMultiple = -1;
     }
 
     public Card(Type type, Color color, int drawMultiple) {
@@ -14,12 +19,32 @@ public class Card {
         this.drawMultiple = drawMultiple;
     }
 
-    public boolean canUse() {
-        return switch (Instances.deck.lastCard.type) {
-            case SEVEN -> this.type == Type.SEVEN;
-            case ACE -> this.type == Type.ACE;
-            default -> this.type == Instances.deck.lastCard.type || this.color == Instances.deck.lastCard.color;
-        };
+    @Override
+    public String toString() {
+        return "Card{" +
+                "color=" + color +
+                ", type=" + type +
+                ", drawMultiple=" + drawMultiple +
+                '}';
+    }
+
+    public void dump() {
+        System.out.println("Dump of Card{ ");
+        System.out.println("color=" + color);
+        System.out.println(", type=" + type);
+        System.out.println(", drawMultiple=" + drawMultiple);
+        try {
+            System.out.println(", game=" + Main.game);
+        } catch (Exception ignored) {
+        }
+
+    }
+
+    @Deprecated
+    // z nějakýho důvodu házelo NullPointerException. bude fungovat pokud this.game != null, ale spoléhá na canUse() z Decku
+    public boolean canUse(Card lastCard) {
+        System.out.println(MikolasovyConsoleBarvy.PURPLE + "WARN: Used deprecated method");
+        return Main.game.deck.canUse(this);
     }
 
     public enum Color {

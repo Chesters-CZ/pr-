@@ -1,37 +1,57 @@
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 
 public class Deck {
-    public static Card[] defaultDeck = {new Card(Card.Type.ACE, Card.Color.BALLS), new Card(Card.Type.SEVEN, Card.Color.BALLS,2), new Card(Card.Type.EIGHT, Card.Color.BALLS), new Card(Card.Type.NINE, Card.Color.BALLS), new Card(Card.Type.TEN, Card.Color.BALLS), new Card(Card.Type.JEAN, Card.Color.BALLS), new Card(Card.Type.QUEEN, Card.Color.BALLS), new Card(Card.Type.KING, Card.Color.BALLS), new Card(Card.Type.ACE, Card.Color.HEARTS), new Card(Card.Type.SEVEN, Card.Color.HEARTS,2), new Card(Card.Type.EIGHT, Card.Color.HEARTS), new Card(Card.Type.NINE, Card.Color.HEARTS), new Card(Card.Type.TEN, Card.Color.HEARTS), new Card(Card.Type.JEAN, Card.Color.HEARTS), new Card(Card.Type.QUEEN, Card.Color.HEARTS), new Card(Card.Type.KING, Card.Color.HEARTS), new Card(Card.Type.ACE, Card.Color.LEAVES), new Card(Card.Type.SEVEN, Card.Color.LEAVES,2), new Card(Card.Type.EIGHT, Card.Color.LEAVES), new Card(Card.Type.NINE, Card.Color.LEAVES), new Card(Card.Type.TEN, Card.Color.LEAVES), new Card(Card.Type.JEAN, Card.Color.LEAVES), new Card(Card.Type.QUEEN, Card.Color.LEAVES), new Card(Card.Type.KING, Card.Color.LEAVES), new Card(Card.Type.ACE, Card.Color.ACORNS), new Card(Card.Type.SEVEN, Card.Color.ACORNS,2), new Card(Card.Type.EIGHT, Card.Color.ACORNS), new Card(Card.Type.NINE, Card.Color.ACORNS), new Card(Card.Type.TEN, Card.Color.ACORNS), new Card(Card.Type.JEAN, Card.Color.ACORNS), new Card(Card.Type.QUEEN, Card.Color.ACORNS), new Card(Card.Type.KING, Card.Color.ACORNS)};
-    public Card lastCard = null;
-    public ArrayList<Card> deck = new ArrayList<>();
-    public static int posInDeck = -1;
+    public ArrayList<Card> deck = defaultDeck();
+    public Card lastCard = drawCard();
 
-    public static Card drawCard() {
-        posInDeck++;
-        if (posInDeck % defaultDeck.length == 0) Collections.shuffle(Instances.deck.deck);
-        return Instances.deck.deck.get(posInDeck%defaultDeck.length);
+    public ArrayList<Card> defaultDeck() {
+        ArrayList<Card> out = new ArrayList<>();
+        for (int i = 0; i < Card.Color.values().length; i++)
+            for (int j = 0; j < Card.Type.values().length - 2; j++)
+                out.add(new Card(switch (j) {
+                    case 0 -> Card.Type.SEVEN;
+                    case 1 -> Card.Type.EIGHT;
+                    case 2 -> Card.Type.NINE;
+                    case 3 -> Card.Type.TEN;
+                    case 4 -> Card.Type.JEAN;
+                    case 5 -> Card.Type.QUEEN;
+                    case 6 -> Card.Type.KING;
+                    case 7 -> Card.Type.ACE;
+                    default -> null;
+                }, switch (i) {
+                    case 0 -> Card.Color.HEARTS;
+                    case 1 -> Card.Color.LEAVES;
+                    case 2 -> Card.Color.ACORNS;
+                    case 3 -> Card.Color.BALLS;
+                    default -> null;
+                }, switch (j) {
+                    case 0 -> 2;
+                    default -> -1;
+                }));
+        Collections.shuffle(out);
+        return out;
     }
 
-    @Deprecated
-    public static Card drawRandomCard() {
-        Card.Color color = switch ((int) (Math.random() * 3)) {
-            case 0 -> Card.Color.ACORNS;
-            case 1 -> Card.Color.BALLS;
-            case 2 -> Card.Color.HEARTS;
-            default -> Card.Color.LEAVES;
+    public Card drawCard() {
+        if (deck.size() != 0) {
+            Card out = deck.get(0);
+            deck.remove(0);
+            return out;
+        } else {
+            deck = defaultDeck();
+            return drawCard();
+        }
+    }
+
+
+    public boolean canUse(Card card) {
+        return switch (lastCard.type) {
+            case SEVEN -> card.type == Card.Type.SEVEN;
+            case ACE -> card.type == Card.Type.ACE;
+            default -> card.type == lastCard.type || card.color == lastCard.color;
         };
-        Card.Type type =
-                switch ((int) (Math.random() * 7)) {
-                    case 0 -> Card.Type.ACE;
-                    case 1 -> Card.Type.SEVEN;
-                    case 2 -> Card.Type.EIGHT;
-                    case 3 -> Card.Type.NINE;
-                    case 4 -> Card.Type.TEN;
-                    case 5 -> Card.Type.JEAN;
-                    case 6 -> Card.Type.QUEEN;
-                    default -> Card.Type.KING;
-                };
-        return new Card(type, color);
     }
 }
