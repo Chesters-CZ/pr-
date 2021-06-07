@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.NotNull;
-
 import java.time.chrono.MinguoChronology;
 
 public class Card {

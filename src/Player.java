@@ -98,7 +98,7 @@ public class Player {
                     hand.remove(chosen);
                     System.out.println("Zvol barvu svrška");
                     System.out.println(MikolasovyConsoleBarvy.RED + "SRDCE " + MikolasovyConsoleBarvy.YELLOW + "ŽALUDY " + MikolasovyConsoleBarvy.CYAN + "KOULE " + MikolasovyConsoleBarvy.GREEN + "LISTY" + MikolasovyConsoleBarvy.RESET);
-                    boolean repeat = true;
+                    boolean repeat = true;  //todo: move to game
                     while (repeat)
                         switch (Main.game.scanner.nextLine().replaceAll("\\p{M}", "").toLowerCase(Locale.ROOT)) {
                             case "srdce" -> {

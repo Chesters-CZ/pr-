@@ -19,7 +19,7 @@ public class Game {
             for (int i = 0; i < players.size(); i++) {
                 System.out.println("hraje hráč " + i);
                 System.out.println("Poslední zahraná karta je " +
-                        switch (deck.lastCard.color) {
+                        switch (deck.lastCard.color) {  //todo: do funkce
                             case HEARTS -> MikolasovyConsoleBarvy.RED + "srdcov";
                             case BALLS -> MikolasovyConsoleBarvy.CYAN + "kulov";
                             case ACORNS -> MikolasovyConsoleBarvy.YELLOW + "žaludov";
