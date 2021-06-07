@@ -1,7 +1,5 @@
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class Deck {
     public ArrayList<Card> deck = defaultDeck();
@@ -27,10 +25,7 @@ public class Deck {
                     case 2 -> Card.Color.ACORNS;
                     case 3 -> Card.Color.BALLS;
                     default -> null;
-                }, switch (j) {
-                    case 0 -> 2;
-                    default -> -1;
-                }));
+                }, j == 0 ? 2 : 1));    //kondicionální operátor - dobrý, ne?
         Collections.shuffle(out);
         return out;
     }

@@ -74,7 +74,11 @@ public class Player {
                     continue;
                 }
                 if (Main.game.deck.lastCard.type == Card.Type.ACE) {
-                    Main.game.deck.lastCard.type = Card.Type.ACE_USED;
+                    if (chosen == hand.size()) Main.game.deck.lastCard.type = Card.Type.ACE_USED;
+                    else {
+                        Main.game.deck.lastCard = hand.get(chosen);
+                        hand.remove(chosen);
+                    }
                     break;
                 } else if (Main.game.deck.lastCard.type == Card.Type.SEVEN) {
                     if (chosen == this.hand.size()) {

@@ -17,11 +17,22 @@ public class Card {
 
     @Override
     public String toString() {
-        return "Card{" +
-                "color=" + color +
-                ", type=" + type +
-                ", drawMultiple=" + drawMultiple +
-                '}';
+        return switch (this.color) {
+            case HEARTS -> MikolasovyConsoleBarvy.RED + "srdcov";
+            case BALLS -> MikolasovyConsoleBarvy.CYAN + "kulov";
+            case ACORNS -> MikolasovyConsoleBarvy.YELLOW + "žaludov";
+            case LEAVES -> MikolasovyConsoleBarvy.GREEN + "zelen";
+        } +
+                switch (this.type) {
+                    case SEVEN, SEVEN_USED -> "á" + MikolasovyConsoleBarvy.RESET + " sedma";
+                    case EIGHT -> "á" + MikolasovyConsoleBarvy.RESET + " osma";
+                    case NINE -> "á" + MikolasovyConsoleBarvy.RESET + " devítka";
+                    case TEN -> "á" + MikolasovyConsoleBarvy.RESET + " desítka";
+                    case JEAN -> "ej" + MikolasovyConsoleBarvy.RESET + " spodek";
+                    case QUEEN -> "ej" + MikolasovyConsoleBarvy.RESET + " svršek";
+                    case KING -> "ej" + MikolasovyConsoleBarvy.RESET + " král";
+                    case ACE, ACE_USED -> "ý" + MikolasovyConsoleBarvy.RESET + " eso";
+                };
     }
 
     public void dump() {
