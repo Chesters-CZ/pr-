@@ -111,8 +111,7 @@ public class Player {
                 }
             }
 
-        } else {    // bot ai TODO: fix ai
-            System.out.println(MikolasovyConsoleBarvy.BLACK + MikolasovyConsoleBarvy.BG_YELLOW + "HRAJE BOT"+MikolasovyConsoleBarvy.RESET);
+        } else {    // bot ai
             boolean playedsth = false;
             int chosen = -1;
             switch (Main.game.deck.lastCard.type) {
