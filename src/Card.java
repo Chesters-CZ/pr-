@@ -1,5 +1,3 @@
-import java.time.chrono.MinguoChronology;
-
 public class Card {
     public Color color;
     public Type type;
@@ -35,7 +33,7 @@ public class Card {
             System.out.println(", game=" + Main.game);
         } catch (Exception ignored) {
         }
-
+        System.out.println("}");
     }
 
     @Deprecated

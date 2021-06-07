@@ -1,7 +1,4 @@
-import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Scanner;
 
 public class Player {
     public ArrayList<Card> hand = new ArrayList<>();
@@ -69,10 +66,11 @@ public class Player {
             int chosen;
             while (true) {
                 try {
+                    System.out.print("hodnotu pls: ");
                     chosen = Main.game.scanner.nextInt();
                     if (chosen > this.hand.size() || chosen < 0) throw new Exception();
                 } catch (Exception e) {
-                    System.out.println("Zvolil jsi neplatnou hodnotu.");
+                    System.out.println("Zvolil jsi neplatnou hodnotu. (" + e + ")");
                     continue;
                 }
                 if (Main.game.deck.lastCard.type == Card.Type.ACE) {
@@ -97,28 +95,11 @@ public class Player {
                     Main.game.deck.lastCard = hand.get(chosen);
                     hand.remove(chosen);
                     System.out.println("Zvol barvu svrška");
-                    System.out.println(MikolasovyConsoleBarvy.RED + "SRDCE " + MikolasovyConsoleBarvy.YELLOW + "ŽALUDY " + MikolasovyConsoleBarvy.CYAN + "KOULE " + MikolasovyConsoleBarvy.GREEN + "LISTY" + MikolasovyConsoleBarvy.RESET);
-                    boolean repeat = true;  //todo: move to game
-                    while (repeat)
-                        switch (Main.game.scanner.nextLine().replaceAll("\\p{M}", "").toLowerCase(Locale.ROOT)) {
-                            case "srdce" -> {
-                                Main.game.deck.lastCard.color = Card.Color.HEARTS;
-                                repeat = false;
-                            }
-                            case "zaludy" -> {
-                                Main.game.deck.lastCard.color = Card.Color.ACORNS;
-                                repeat = false;
-                            }
-                            case "koule" -> {
-                                Main.game.deck.lastCard.color = Card.Color.BALLS;
-                                repeat = false;
-                            }
-                            case "listy" -> {
-                                Main.game.deck.lastCard.color = Card.Color.LEAVES;
-                                repeat = false;
-                            }
-                            default -> System.out.println("Zadanou barvu neznám. Zkus to znova.");
-                        }
+                    System.out.println(MikolasovyConsoleBarvy.RED + "S" + MikolasovyConsoleBarvy.RESET + "rdce " + MikolasovyConsoleBarvy.YELLOW + "Z" + MikolasovyConsoleBarvy.RESET + "aludy " + MikolasovyConsoleBarvy.CYAN + "K" + MikolasovyConsoleBarvy.RESET + "oule " + MikolasovyConsoleBarvy.GREEN + "L" + MikolasovyConsoleBarvy.RESET + "isty" + MikolasovyConsoleBarvy.RESET);
+                    Main.game.deck.lastCard.dump();
+                    Main.game.deck.lastCard.color = Main.game.useQueen();
+                    Main.game.deck.lastCard.dump();
+                    break;
                 } else if (Main.game.deck.canUse(hand.get(chosen))) {
                     Main.game.deck.lastCard = hand.get(chosen);
                     hand.remove(hand.get(chosen));

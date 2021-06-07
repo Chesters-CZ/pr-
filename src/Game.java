@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Game {
@@ -46,6 +45,33 @@ public class Game {
     public boolean isOver() {
         for (Player player : players) if (player.won()) return true;
         return false;
+    }
+
+    public Card.Color useQueen() {
+        Card.Color result; //další nutný zlo, který nevim jak vyřešit. aspoň umim labelovat loopy, ne?
+        vyberbarvy:
+        while (true){
+            switch (Main.game.scanner.next().charAt(0)) { //TODO: proč se to tady rozbíjelo s nextline
+                case 's', 'S' -> {
+                    result = Card.Color.HEARTS;
+                    break vyberbarvy;
+                }
+                case 'z', 'Z', 'ž', 'Ž' -> {
+                    result = Card.Color.ACORNS;
+                    break vyberbarvy;
+                }
+                case 'k', 'K' -> {
+                    result = Card.Color.BALLS;
+                    break vyberbarvy;
+                }
+                case 'l', 'L' -> {
+                    result = Card.Color.LEAVES;
+                    break vyberbarvy;
+                }
+                default -> System.out.println("Zadanou barvu neznám. Zkus to znova.");
+            }}
+        System.out.println("broke out of vyberbarvy");
+        return result;
     }
 }
 
