@@ -21,10 +21,8 @@ public class Game {
                 System.out.println("hraje hráč " + i);
                 System.out.println("Poslední zahraná karta je " + Main.game.deck.lastCard);
                 players.get(i).playSth();
+                if (players.get(i).won()) System.out.println(MikolasovyConsoleBarvy.BLUE + "Hráč " + i + " snědl prś");
             }
-        }
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).won()) System.out.println(MikolasovyConsoleBarvy.BLUE + "Hráč " + i + " snědl prś");
         }
     }
 
