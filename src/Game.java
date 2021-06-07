@@ -24,7 +24,10 @@ public class Game {
             }
         }
         for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).won()) System.out.println(MikolasovyConsoleBarvy.BLUE + "Hráč " + i + " snědl prś");
+            if (players.get(i).won()) {
+                System.out.println(MikolasovyConsoleBarvy.BLUE + "Hráč " + i + " snědl prś");
+                break;
+            }
         }
     }
 
@@ -40,7 +43,7 @@ public class Game {
             System.out.println(MikolasovyConsoleBarvy.BLUE + "Super. Kolik lidí hodláš mučit?" + MikolasovyConsoleBarvy.RESET);
             plrs = scanner.nextInt();
 
-            System.out.println(MikolasovyConsoleBarvy.BLUE + "k. kolik budeš chtít botů? "+MikolasovyConsoleBarvy.BLACK+MikolasovyConsoleBarvy.BG_YELLOW+"(EARLY ACCESS)" + MikolasovyConsoleBarvy.RESET);
+            System.out.println(MikolasovyConsoleBarvy.BLUE + "k. kolik budeš chtít botů? " + MikolasovyConsoleBarvy.BLACK + MikolasovyConsoleBarvy.BG_YELLOW + "(EARLY ACCESS)" + MikolasovyConsoleBarvy.RESET);
             bots = scanner.nextInt();
 
             if ((plrs < 0 && bots < 0) || plrs + bots < 1)
