@@ -56,6 +56,32 @@ public class Game {
         for (; bots > 0; bots--) players.add(new Player(cards, false));      //boti
     }
 
+    public String vypsatkarty(ArrayList<Card> hand){
+        StringBuilder result = new StringBuilder();
+        for (Card card : hand) {
+            if (!Main.game.deck.canUse(card)) result.append(MikolasovyConsoleBarvy.BG_BLACK);
+            result.append(switch (card.color) {
+                case ACORNS -> MikolasovyConsoleBarvy.YELLOW;
+                case BALLS -> MikolasovyConsoleBarvy.CYAN;
+                case HEARTS -> MikolasovyConsoleBarvy.RED;
+                case LEAVES -> MikolasovyConsoleBarvy.GREEN;
+                default -> MikolasovyConsoleBarvy.PURPLE;
+            });
+            result.append(switch (card.type) {
+                case ACE, ACE_USED -> " A";
+                case TEN -> "10";
+                case JEAN -> " J";
+                case KING -> " K";
+                case QUEEN -> " Q";
+                case SEVEN, SEVEN_USED -> " 7";
+                case EIGHT -> " 8";
+                case NINE -> " 9";
+                default -> MikolasovyConsoleBarvy.PURPLE + "??";
+            }).append("\t").append(MikolasovyConsoleBarvy.RESET);
+        }
+        return result.toString();
+    }
+
     public Card.Color useQueen() {
         vyberbarvy:
         while (true) {  //TODO: replace with do-while?
