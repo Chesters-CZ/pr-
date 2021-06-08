@@ -1,3 +1,5 @@
+package cz.chesters.prs;
+
 public class MikolasovyConsoleBarvy {
     public static final String RESET = "\u001B[0m";
 

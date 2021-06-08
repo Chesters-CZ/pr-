@@ -1,3 +1,5 @@
+package cz.chesters.prs;
+
 public class Card {
     public Color color;
     public Type type;
@@ -36,7 +38,7 @@ public class Card {
     }
 
     public void dump() {
-        System.out.println("Dump of Card{ ");
+        System.out.println("Dump of cz.chesters.prs.Card{ ");
         System.out.println("color=" + color);
         System.out.println(", type=" + type);
         System.out.println(", drawMultiple=" + drawMultiple);

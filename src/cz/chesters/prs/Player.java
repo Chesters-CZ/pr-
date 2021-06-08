@@ -1,3 +1,5 @@
+package cz.chesters.prs;
+
 import java.util.ArrayList;
 
 public class Player {
@@ -24,7 +26,7 @@ public class Player {
             StringBuilder visualizedCards = new StringBuilder();
             visualizedCards.append(Main.game.vypsatkarty(hand));
             //debug System.out.println(this.hand.size());
-            //debug Main.game.deck.lastCard.dump();
+            //debug cz.chesters.prs.Main.game.deck.lastCard.dump();
             visualizedCards.append(switch (Main.game.deck.lastCard.type) {
                 case ACE -> "PASS";
                 case SEVEN -> "DRW" + Main.game.deck.lastCard.drawMultiple;

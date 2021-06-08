@@ -1,3 +1,5 @@
+package cz.chesters.prs;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -56,7 +58,7 @@ public class Game {
         for (; bots > 0; bots--) players.add(new Player(cards, false));      //boti
     }
 
-    public String vypsatkarty(ArrayList<Card> hand){
+    public String vypsatkarty(ArrayList<Card> hand) {
         StringBuilder result = new StringBuilder();
         for (Card card : hand) {
             if (!Main.game.deck.canUse(card)) result.append(MikolasovyConsoleBarvy.BG_BLACK);
